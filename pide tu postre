@@ -1781,10 +1781,8 @@ Private Sub UserForm_Initialize()
     
 End Sub
 
-
-/////////////////// fin :)
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////// pestaña resumen
 
 
 
@@ -1793,6 +1791,79 @@ End Sub
 
 
 
+
+
+Private Sub CommandButton1_Click()
+    If ThisWorkbook.Sheets("Resumen").Range("C4").Value <> "" And _
+        ThisWorkbook.Sheets("Resumen").Range("C6").Value <> "" Then
+        
+        If Not IsDate(ThisWorkbook.Sheets("Resumen").Range("C4").Value) _
+            Or Not IsDate(ThisWorkbook.Sheets("Resumen").Range("C6").Value) _
+                Then
+            MsgBox ("no se ha ingresado una fecha")
+        Else
+                  
+            ThisWorkbook.Sheets("Resumen").Range("C10").Value = ""
+            ThisWorkbook.Sheets("Resumen").Range("C12").Value = ""
+            Dim lastRowVentas As Long
+            lastRowVentas = ThisWorkbook.Sheets("Ventas").Range("A" & _
+                Cells.Rows.Count).End(xlUp).Row
+                
+            Debug.Print lastRowVentas
+            
+            Dim cell As Range
+            For Each cell In ThisWorkbook.Sheets("Ventas").Range("C2:C" _
+                & lastRowVentas)
+                    
+                If CDate(cell.Value) >= ThisWorkbook.Sheets("Resumen").Range("C4").Value Then
+                    
+                    If CDate(cell.Value) <= ThisWorkbook.Sheets("Resumen").Range("C6").Value Then
+                        
+                          ThisWorkbook.Sheets("Resumen").Range("C10").Value = _
+                            ThisWorkbook.Sheets("Resumen").Range("C10").Value + _
+                                cell.Offset(0, 4)
+                    End If
+                    
+                        
+                       
+                End If
+                    
+            Next cell
+            
+            Dim lastRowCompras As Long
+            lastRowCompras = ThisWorkbook.Sheets("Compras").Range("A" & _
+                Cells.Rows.Count).End(xlUp).Row
+                
+            Debug.Print lastRowCompras
+            
+            For Each cell In ThisWorkbook.Sheets("Compras").Range("B2:B" _
+                & lastRowCompras)
+                    
+                If CDate(cell.Value) >= ThisWorkbook.Sheets("Resumen").Range("C4").Value Then
+                    
+                    If CDate(cell.Value) <= ThisWorkbook.Sheets("Resumen").Range("C6").Value Then
+                        
+                          ThisWorkbook.Sheets("Resumen").Range("C12").Value = _
+                            ThisWorkbook.Sheets("Resumen").Range("C12").Value + _
+                                cell.Offset(0, 10)
+                    End If
+                    
+                        
+                       
+                End If
+                    
+            Next cell
+            
+        End If
+    End If
+    
+End Sub
+
+
+
+
+////////////////////////////
+/////////////fin
 
 
 
