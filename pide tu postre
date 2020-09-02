@@ -1,0 +1,1837 @@
+/// codigo de agregar pedido form
+
+
+    
+
+Private Sub btnAgregarCliente_Click()
+    Unload Me
+    formAgregarCliente.Show
+    
+
+End Sub
+
+
+
+Private Sub ComboBox1_Change()
+    lastRow = ThisWorkbook.Sheets("Clientes"). _
+        Range("B" & Cells.Rows.Count).End(xlUp).Row
+        
+    'Debug.Print lastRow
+    found = False
+    For k = 2 To lastRow
+        
+        
+         If Me.ComboBox1.Value = ThisWorkbook.Sheets("Clientes").Cells(k, 2).Value Then
+                Me.idCliente = ThisWorkbook.Sheets("Clientes").Cells(k, 1).Value
+                found = True
+                Me.btnAgregarCliente.Visible = False
+     
+            
+        End If
+
+
+
+    Next k
+    
+    If found = False Then
+        Me.idCliente = "No existe"
+        Me.btnAgregarCliente.Visible = True
+        Me.btnAgregarCliente.Caption = "+"
+    End If
+        
+    
+End Sub
+
+Private Sub Label2_Click()
+
+End Sub
+
+Private Sub ComboBox2_Change()
+
+End Sub
+
+Private Sub CommandButton1_Click()
+    
+      If Me.item1 = "" And Me.ComboBox2.Value <> "" And Me.TextBox1.Value <> "" Then
+            Me.item1 = "1."
+            Me.producto1 = Me.ComboBox2.Value
+            Me.cantidad1 = Me.TextBox1.Value
+            Me.item1.Visible = True
+            Me.producto1.Visible = True
+            Me.cantidad1.Visible = True
+            
+            
+            Me.precio1.Visible = True
+            
+            
+            Me.precio1 = Format(findValue(Me.producto1), "#,##0.00")
+            
+            Me.subtotal1.Visible = True
+           Me.subtotal1 = Format(calculateSubtotal(Me.cantidad1, Me.precio1), "#,##0.00")
+            
+            Me.Label16 = Me.subtotal1
+            
+            Me.ComboBox2.Value = ""
+            Me.TextBox1.Value = ""
+            
+            
+        
+      ElseIf Me.item2 = "" And Me.ComboBox2.Value <> "" And Me.TextBox1.Value <> "" Then
+            Me.item2 = "2."
+            Me.producto2 = Me.ComboBox2.Value
+            Me.cantidad2 = Me.TextBox1.Value
+            Me.item2.Visible = True
+            Me.producto2.Visible = True
+            Me.cantidad2.Visible = True
+            
+            Me.precio2.Visible = True
+            
+            
+            Me.precio2 = Format(findValue(Me.producto2), "#,##0.00")
+            
+            Me.subtotal2.Visible = True
+           Me.subtotal2 = Format(calculateSubtotal(Me.cantidad2, Me.precio2), "#,##0.00")
+           
+            
+            Me.ComboBox2.Value = ""
+            Me.TextBox1.Value = ""
+            
+            
+            If Me.cantidad2 <> "" And Me.precio2 <> "" Then
+            
+                Me.Label16 = CDbl(Me.Label16) + CDbl(Me.subtotal2)
+                
+            End If
+            
+            
+      ElseIf Me.item3 = "" And Me.ComboBox2.Value <> "" And Me.TextBox1.Value <> "" Then
+            Me.item3 = "3."
+            Me.producto3 = Me.ComboBox2.Value
+            Me.cantidad3 = Me.TextBox1.Value
+            Me.item3.Visible = True
+            Me.producto3.Visible = True
+            Me.cantidad3.Visible = True
+            
+            Me.precio3.Visible = True
+            
+            
+            Me.precio3 = Format(findValue(Me.producto3), "#,##0.00")
+            
+            Me.subtotal3.Visible = True
+           Me.subtotal3 = Format(calculateSubtotal(Me.cantidad3, Me.precio3), "#,##0.00")
+           
+            If Me.cantidad3 <> "" And Me.precio3 <> "" Then
+                Me.Label16 = CDbl(Me.Label16) + CDbl(Me.subtotal3)
+            End If
+            
+            Me.ComboBox2.Value = ""
+            Me.TextBox1.Value = ""
+            
+     ElseIf Me.item4 = "" And Me.ComboBox2.Value <> "" And Me.TextBox1.Value <> "" Then
+            Me.item4 = "4."
+            Me.producto4 = Me.ComboBox2.Value
+            Me.cantidad4 = Me.TextBox1.Value
+            Me.item4.Visible = True
+            Me.producto4.Visible = True
+            Me.cantidad4.Visible = True
+            
+            Me.precio4.Visible = True
+            
+            
+            Me.precio4 = Format(findValue(Me.producto4), "#,##0.00")
+            
+            Me.subtotal4.Visible = True
+           Me.subtotal4 = Format(calculateSubtotal(Me.cantidad4, Me.precio4), "#,##0.00")
+           
+           If Me.cantidad4 <> "" And Me.precio4 <> "" Then
+                Me.Label16 = CDbl(Me.Label16) + CDbl(Me.subtotal4)
+            End If
+            
+            Me.ComboBox2.Value = ""
+            Me.TextBox1.Value = ""
+            
+     ElseIf Me.item5 = "" And Me.ComboBox2.Value <> "" And Me.TextBox1.Value <> "" Then
+            Me.item5 = "5."
+            Me.producto5 = Me.ComboBox2.Value
+            Me.cantidad5 = Me.TextBox1.Value
+            Me.item5.Visible = True
+            Me.producto5.Visible = True
+            Me.cantidad5.Visible = True
+            
+            Me.precio5.Visible = True
+            
+            
+            Me.precio5 = Format(findValue(Me.producto5), "#,##0.00")
+            
+            Me.subtotal5.Visible = True
+           Me.subtotal5 = Format(calculateSubtotal(Me.cantidad5, Me.precio5), "#,##0.00")
+           
+           If Me.cantidad5 <> "" And Me.precio5 <> "" Then
+            Me.Label16 = CDbl(Me.Label16) + CDbl(Me.subtotal5)
+           End If
+           
+            
+            Me.ComboBox2.Value = ""
+            Me.TextBox1.Value = ""
+            
+    End If
+    
+    
+    'WorksheetFunction.Max(ThisWorkbook.Sheets("Ventas").Range("A:A")) + 1
+    
+    
+End Sub
+
+Private Sub CommandButton2_Click()
+
+    Dim lineaPedidoArray() As Variant
+    Dim itemNum() As Variant
+    Dim nombreProductoLinea() As Variant
+    Dim cantidadProductoLinea() As Variant
+    
+    itemNum1 = Array(Me.item1, Me.producto1, Me.cantidad1)
+    itemNum2 = Array(Me.item2, Me.producto2, Me.cantidad2)
+    itemNum3 = Array(Me.item3, Me.producto3, Me.cantidad3)
+    itemNum4 = Array(Me.item4, Me.producto4, Me.cantidad4)
+    itemNum5 = Array(Me.item5, Me.producto5, Me.cantidad5)
+    
+    lineaPedidoArray = Array(itemNum1, itemNum2, itemNum3, itemNum4, itemNum5)
+    
+    'Debug.Print lineaPedidoArray(0)(0) & "item"
+    'Debug.Print lineaPedidoArray(0)(1) & "producto"
+   ' Debug.Print lineaPedidoArray(0)(2) & "cantidad"
+    
+       
+    
+    
+    
+    
+        
+   ' Debug.Print lastRow
+    
+    Dim elemento As Variant
+        
+        For Each elemento In lineaPedidoArray
+            lastRow = ThisWorkbook.Sheets("Pedidos"). _
+        Range("A" & Cells.Rows.Count).End(xlUp).Row
+        
+            If elemento(0) <> "" Then
+    
+                If lastRow = 2 And ThisWorkbook.Sheets("Pedidos").Range("A" & lastRow).Value = "" Then
+        
+        
+                    ThisWorkbook.Sheets("Pedidos").Range("A" & lastRow).Value = CInt(Me.numPedido)
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("B" & lastRow).Value = Date
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("C" & lastRow).Value = CInt(elemento(0)) 'CInt(Me.item1)
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("D" & lastRow).Value = Me.ComboBox1.Value
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("E" & lastRow).Value = elemento(1)
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("F" & lastRow).Value = CInt(elemento(2))
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("G" & lastRow).Value = Format(findCost(elemento(1)), "#,##0.00") * CInt(elemento(2))
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("H" & lastRow).Value = Format(findPrice(elemento(1)), "#,##0.00") * CInt(elemento(2))
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("I" & lastRow).Value = ThisWorkbook.Sheets("Pedidos").Range("G" & lastRow).Value - ThisWorkbook.Sheets("Pedidos").Range("F" & lastRow).Value
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("J" & lastRow).Value = "Nuevo"
+            
+                    Dim cellA As Range
+                    For Each cellA In Workbooks("pide tu postre costos").Sheets("Insumos").Range("C3:C100")
+                        If elemento(1) = "Pie de Manzana (tradicional)" Then
+                            Dim cellB As Range
+                            For Each cellB In Workbooks("pide tu postre costos").Sheets("P1").Range("B4:B23")
+                                If cellB.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellB.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellB
+                
+                        ElseIf elemento(1) = "Pie de Manzana (saludable)" Then
+                            Dim cellC As Range
+                            For Each cellC In Workbooks("pide tu postre costos").Sheets("P1").Range("B36:B55")
+                                If cellC.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellC.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellC
+                        
+                        ElseIf elemento(1) = "crocante de manzana (tradicional)" Then
+                            Dim cellD As Range
+                            For Each cellD In Workbooks("pide tu postre costos").Sheets("P1 (2)").Range("B4:B23")
+                                If cellD.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellD.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellD
+                        
+                        
+                        ElseIf elemento(1) = "crocante de manzana (saludable)" Then
+                            Dim cellE As Range
+                            For Each cellE In Workbooks("pide tu postre costos").Sheets("P1 (2)").Range("B32:B51")
+                                If cellE.Value = cellA.Value Then
+                                    cellE.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellE.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellE
+                        
+                        ElseIf elemento(1) = "Carrot cake (tradicional)" Then
+                            Dim cellF As Range
+                            For Each cellF In Workbooks("pide tu postre costos").Sheets("P2").Range("B4:B30")
+                                If cellF.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellF.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellF
+                        
+                        ElseIf elemento(1) = "Carrot cake (saludable)" Then
+                            Dim cellG As Range
+                            For Each cellG In Workbooks("pide tu postre costos").Sheets("P2").Range("B39:B65")
+                                If cellG.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellG.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellG
+                            
+                        ElseIf elemento(1) = "mini carrot con frosting (tradicional)" Then
+                            Dim cellH As Range
+                            For Each cellH In Workbooks("pide tu postre costos").Sheets("P2 (2)").Range("B4:B28")
+                                If cellH.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellH.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellH
+                        
+                        ElseIf elemento(1) = "mini carrot con frosting (saludable)" Then
+                            Dim cellI As Range
+                            For Each cellI In Workbooks("pide tu postre costos").Sheets("P2 (2)").Range("B40:B64")
+                                If cellI.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellI.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellI
+                        
+                        ElseIf elemento(1) = "carrot molde ingles (tradicional)" Then
+                            Dim cellJ As Range
+                            For Each cellJ In Workbooks("pide tu postre costos").Sheets("P2 (3)").Range("B4:B28")
+                                If cellJ.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellJ.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellJ
+                        
+                        ElseIf elemento(1) = "carrot molde ingles (saludable)" Then
+                            Dim cellK As Range
+                            For Each cellK In Workbooks("pide tu postre costos").Sheets("P2 (3)").Range("B36:B60")
+                                If cellK.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellK.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellK
+                        
+                        ElseIf elemento(1) = "Turron de chocolate (tradicional)" Then
+                            Dim cellL As Range
+                            For Each cellL In Workbooks("pide tu postre costos").Sheets("P3").Range("B4:B23")
+                                If cellL.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellL.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellL
+                        
+                        
+                        ElseIf elemento(1) = "Turron de chocolate (saludable)" Then
+                            Dim cellM As Range
+                            For Each cellM In Workbooks("pide tu postre costos").Sheets("P3").Range("B33:B53")
+                                If cellM.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellM.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellM
+                            
+                          
+                        ElseIf elemento(1) = "Banana bread c frutos secos (tradicional)" Then
+                            Dim cellN As Range
+                            For Each cellN In Workbooks("pide tu postre costos").Sheets("P4").Range("B4:B19")
+                                If cellN.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellN.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellN
+                        
+                        
+                        ElseIf elemento(1) = "Banana bread c frutos secos (saludable)" Then
+                            Dim cellO As Range
+                            For Each cellO In Workbooks("pide tu postre costos").Sheets("P4").Range("B30:B45")
+                                If cellO.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellO.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellO
+                            
+                        ElseIf elemento(1) = "Banana Bread con buttercream (tradicional)" Then
+                            Dim cellP As Range
+                            For Each cellP In Workbooks("pide tu postre costos").Sheets("P5").Range("B3:B21")
+                                If cellP.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellP.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellP
+                        
+                        
+                        ElseIf elemento(1) = "Cheesecake de Fresa (tradicional)" Then
+                          '  Dim cellC As Range
+                            For Each cellC In Workbooks("pide tu postre costos").Sheets("P6").Range("B4:B24")
+                                If cellC.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellC.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellC
+                        
+                        ElseIf elemento(1) = "Cheesecake de Fresa (saludable)" Then
+                           ' Dim cellD As Range
+                            For Each cellD In Workbooks("pide tu postre costos").Sheets("P6").Range("B36:B56")
+                                If cellD.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellD.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellD
+                        
+                        
+                        ElseIf elemento(1) = "Pie de  limon (tradicional)" Then
+                           ' Dim cellE As Range
+                            For Each cellE In Workbooks("pide tu postre costos").Sheets("P7").Range("B3:B14")
+                                If cellE.Value = cellA.Value Then
+                                    cellE.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellE.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellE
+                        
+                        ElseIf elemento(1) = "Pie de  limon keto (saludable)" Then
+                            'Dim cellF As Range
+                            For Each cellF In Workbooks("pide tu postre costos").Sheets("P7 (2)").Range("B3:B18")
+                                If cellF.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellF.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellF
+                        
+                        ElseIf elemento(1) = "Brownie 8 (tradicional)" Then
+                           ' Dim cellG As Range
+                            For Each cellG In Workbooks("pide tu postre costos").Sheets("P8").Range("B3:B24")
+                                If cellG.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellG.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellG
+                            
+                        ElseIf elemento(1) = "brownie saludable (saludable)" Then
+                           ' Dim cellH As Range
+                            For Each cellH In Workbooks("pide tu postre costos").Sheets("P8 (2)").Range("B3:B21")
+                                If cellH.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellH.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellH
+                        
+                        ElseIf elemento(1) = "brownie 4 (tradicional)" Then
+                            'Dim cellI As Range
+                            For Each cellI In Workbooks("pide tu postre costos").Sheets("P8 (3)").Range("B3:B25")
+                                If cellI.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellI.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellI
+                        
+                        ElseIf elemento(1) = "brownie corazon o pizza (tradicional)" Then
+                           ' Dim cellJ As Range
+                            For Each cellJ In Workbooks("pide tu postre costos").Sheets("P8 (4)").Range("B3:B24")
+                                If cellJ.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellJ.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellJ
+                        
+                        ElseIf elemento(1) = "mini brownie 24 (tradicional)" Then
+                           ' Dim cellK As Range
+                            For Each cellK In Workbooks("pide tu postre costos").Sheets("P8 (5)").Range("B3:B22")
+                                If cellK.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellK.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellK
+                        
+                        ElseIf elemento(1) = "mini brownie 16 (tradicional)" Then
+                          '  Dim cellL As Range
+                            For Each cellL In Workbooks("pide tu postre costos").Sheets("P8 (5)").Range("B3:B22")
+                                If cellL.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellL.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellL
+                        
+                        
+                        ElseIf elemento(1) = "keke naranja (tradicional)" Then
+                           ' Dim cellM As Range
+                            For Each cellM In Workbooks("pide tu postre costos").Sheets("P9").Range("B3:B11")
+                                If cellM.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellM.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellM
+                            
+                          
+                        ElseIf elemento(1) = "blondie 8 (tradicional)" Then
+                           ' Dim cellN As Range
+                            For Each cellN In Workbooks("pide tu postre costos").Sheets("P10").Range("B3:B19")
+                                If cellN.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellN.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellN
+                        
+                        
+                        ElseIf elemento(1) = "blondie 4 (tradicional)" Then
+                           ' Dim cellO As Range
+                            For Each cellO In Workbooks("pide tu postre costos").Sheets("P10 (1)").Range("B3:B19")
+                                If cellO.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellO.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellO
+                            
+                        ElseIf elemento(1) = "torta de galleta (tradicional)" Then
+                          '  Dim cellP As Range
+                            For Each cellP In Workbooks("pide tu postre costos").Sheets("P12").Range("B3:B17")
+                                If cellP.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellP.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellP
+                        
+                        'ElseIf elemento(1) = "torta chocolate (tradicional)" Then
+                           ' Dim cellP As Range
+                           ' For Each cellP In Workbooks("pide tu postre costos").Sheets("P5").Range("B3:B21")
+                               ' If cellP.Value = cellA.Value Then
+                                  '  cellA.Offset(0, 12) = cellA.Offset(0, 12) + cellP.Offset(0, 5) * elemento(2)
+                               ' End If
+                        
+                
+                           ' Next cellP
+                        
+                        
+                        End If
+            
+                    Next cellA
+        
+       
+    
+              Else
+                    ThisWorkbook.Sheets("Pedidos").Range("A" & lastRow + 1).Value = CInt(Me.numPedido)
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("B" & lastRow + 1).Value = Date
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("C" & lastRow + 1).Value = CInt(elemento(0))
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("D" & lastRow + 1).Value = Me.ComboBox1.Value
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("E" & lastRow + 1).Value = elemento(1)
+    
+                    ThisWorkbook.Sheets("Pedidos").Range("F" & lastRow + 1).Value = CInt(elemento(2))
+    
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("G" & lastRow + 1).Value = Format(findCost(elemento(1)), "#,##0.00") * CInt(elemento(2))
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("H" & lastRow + 1).Value = Format(findPrice(elemento(1)), "#,##0.00") * CInt(elemento(2))
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("I" & lastRow + 1).Value = ThisWorkbook.Sheets("Pedidos").Range("G" & lastRow).Value - ThisWorkbook.Sheets("Pedidos").Range("F" & lastRow).Value
+                    
+                    
+                    
+                    ThisWorkbook.Sheets("Pedidos").Range("J" & lastRow + 1).Value = "Nuevo"
+                    
+                    
+                    
+            
+                    'Dim cellA As Range
+                    For Each cellA In Workbooks("pide tu postre costos").Sheets("Insumos").Range("C3:C100")
+                        If elemento(1) = "Pie de Manzana (tradicional)" Then
+                           ' Dim cellB As Range
+                            For Each cellB In Workbooks("pide tu postre costos").Sheets("P1").Range("B4:B23")
+                                If cellB.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellB.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellB
+                
+                        ElseIf elemento(1) = "Pie de Manzana (saludable)" Then
+                           ' Dim cellC As Range
+                            For Each cellC In Workbooks("pide tu postre costos").Sheets("P1").Range("B36:B55")
+                                If cellC.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellC.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellC
+                        
+                        ElseIf elemento(1) = "crocante de manzana (tradicional)" Then
+                            'Dim cellD As Range
+                            For Each cellD In Workbooks("pide tu postre costos").Sheets("P1 (2)").Range("B4:B23")
+                                If cellD.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellD.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellD
+                        
+                        
+                        ElseIf elemento(1) = "crocante de manzana (saludable)" Then
+                           ' Dim cellE As Range
+                            For Each cellE In Workbooks("pide tu postre costos").Sheets("P1 (2)").Range("B32:B51")
+                                If cellE.Value = cellA.Value Then
+                                    cellE.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellE.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellE
+                        
+                        ElseIf elemento(1) = "Carrot cake (tradicional)" Then
+                          '  Dim cellF As Range
+                            For Each cellF In Workbooks("pide tu postre costos").Sheets("P2").Range("B4:B30")
+                                If cellF.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellF.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellF
+                        
+                        ElseIf elemento(1) = "Carrot cake (saludable)" Then
+                           ' Dim cellG As Range
+                            For Each cellG In Workbooks("pide tu postre costos").Sheets("P2").Range("B39:B65")
+                                If cellG.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellG.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellG
+                            
+                        ElseIf elemento(1) = "mini carrot con frosting (tradicional)" Then
+                          '  Dim cellH As Range
+                            For Each cellH In Workbooks("pide tu postre costos").Sheets("P2 (2)").Range("B4:B28")
+                                If cellH.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellH.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellH
+                        
+                        ElseIf elemento(1) = "mini carrot con frosting (saludable)" Then
+                           ' Dim cellI As Range
+                            For Each cellI In Workbooks("pide tu postre costos").Sheets("P2 (2)").Range("B40:B64")
+                                If cellI.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellI.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellI
+                        
+                        ElseIf elemento(1) = "carrot molde ingles (tradicional)" Then
+                          '  Dim cellJ As Range
+                            For Each cellJ In Workbooks("pide tu postre costos").Sheets("P2 (3)").Range("B4:B28")
+                                If cellJ.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellJ.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellJ
+                        
+                        ElseIf elemento(1) = "carrot molde ingles (saludable)" Then
+                           ' Dim cellK As Range
+                            For Each cellK In Workbooks("pide tu postre costos").Sheets("P2 (3)").Range("B36:B60")
+                                If cellK.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellK.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellK
+                        
+                        ElseIf elemento(1) = "Turron de chocolate (tradicional)" Then
+                           ' Dim cellL As Range
+                            For Each cellL In Workbooks("pide tu postre costos").Sheets("P3").Range("B4:B23")
+                                If cellL.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellL.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellL
+                        
+                        
+                        ElseIf elemento(1) = "Turron de chocolate (saludable)" Then
+                           ' Dim cellM As Range
+                            For Each cellM In Workbooks("pide tu postre costos").Sheets("P3").Range("B33:B53")
+                                If cellM.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellM.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellM
+                            
+                          
+                        ElseIf elemento(1) = "Banana bread c frutos secos (tradicional)" Then
+                           ' Dim cellN As Range
+                            For Each cellN In Workbooks("pide tu postre costos").Sheets("P4").Range("B4:B19")
+                                If cellN.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellN.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellN
+                        
+                        
+                        ElseIf elemento(1) = "Banana bread c frutos secos (saludable)" Then
+                            'Dim cellO As Range
+                            For Each cellO In Workbooks("pide tu postre costos").Sheets("P4").Range("B30:B45")
+                                If cellO.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellO.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellO
+                            
+                        ElseIf elemento(1) = "Banana Bread con buttercream (tradicional)" Then
+                           ' Dim cellP As Range
+                            For Each cellP In Workbooks("pide tu postre costos").Sheets("P5").Range("B3:B21")
+                                If cellP.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellP.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellP
+                        
+                        
+                        ElseIf elemento(1) = "Cheesecake de Fresa (tradicional)" Then
+                          '  Dim cellC As Range
+                            For Each cellC In Workbooks("pide tu postre costos").Sheets("P6").Range("B4:B24")
+                                If cellC.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellC.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellC
+                        
+                        ElseIf elemento(1) = "Cheesecake de Fresa (saludable)" Then
+                           ' Dim cellD As Range
+                            For Each cellD In Workbooks("pide tu postre costos").Sheets("P6").Range("B36:B56")
+                                If cellD.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellD.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellD
+                        
+                        
+                        ElseIf elemento(1) = "Pie de  limon (tradicional)" Then
+                           ' Dim cellE As Range
+                            For Each cellE In Workbooks("pide tu postre costos").Sheets("P7").Range("B3:B14")
+                                If cellE.Value = cellA.Value Then
+                                    cellE.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellE.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellE
+                        
+                        ElseIf elemento(1) = "Pie de  limon keto (saludable)" Then
+                            'Dim cellF As Range
+                            For Each cellF In Workbooks("pide tu postre costos").Sheets("P7 (2)").Range("B3:B18")
+                                If cellF.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellF.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellF
+                        
+                        ElseIf elemento(1) = "Brownie 8 (tradicional)" Then
+                           ' Dim cellG As Range
+                            For Each cellG In Workbooks("pide tu postre costos").Sheets("P8").Range("B3:B24")
+                                If cellG.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellG.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellG
+                            
+                        ElseIf elemento(1) = "brownie saludable (saludable)" Then
+                           ' Dim cellH As Range
+                            For Each cellH In Workbooks("pide tu postre costos").Sheets("P8 (2)").Range("B3:B21")
+                                If cellH.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellH.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellH
+                        
+                        ElseIf elemento(1) = "brownie 4 (tradicional)" Then
+                            'Dim cellI As Range
+                            For Each cellI In Workbooks("pide tu postre costos").Sheets("P8 (3)").Range("B3:B25")
+                                If cellI.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellI.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellI
+                        
+                        ElseIf elemento(1) = "brownie corazon o pizza (tradicional)" Then
+                           ' Dim cellJ As Range
+                            For Each cellJ In Workbooks("pide tu postre costos").Sheets("P8 (4)").Range("B3:B24")
+                                If cellJ.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellJ.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellJ
+                        
+                        ElseIf elemento(1) = "mini brownie 24 (tradicional)" Then
+                           ' Dim cellK As Range
+                            For Each cellK In Workbooks("pide tu postre costos").Sheets("P8 (5)").Range("B3:B22")
+                                If cellK.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellK.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellK
+                        
+                        ElseIf elemento(1) = "mini brownie 16 (tradicional)" Then
+                          '  Dim cellL As Range
+                            For Each cellL In Workbooks("pide tu postre costos").Sheets("P8 (5)").Range("B3:B22")
+                                If cellL.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellL.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellL
+                        
+                        
+                        ElseIf elemento(1) = "keke naranja (tradicional)" Then
+                           ' Dim cellM As Range
+                            For Each cellM In Workbooks("pide tu postre costos").Sheets("P9").Range("B3:B11")
+                                If cellM.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellM.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellM
+                            
+                          
+                        ElseIf elemento(1) = "blondie 8 (tradicional)" Then
+                           ' Dim cellN As Range
+                            For Each cellN In Workbooks("pide tu postre costos").Sheets("P10").Range("B3:B19")
+                                If cellN.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellN.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellN
+                        
+                        
+                        ElseIf elemento(1) = "blondie 4 (tradicional)" Then
+                           ' Dim cellO As Range
+                            For Each cellO In Workbooks("pide tu postre costos").Sheets("P10 (1)").Range("B3:B19")
+                                If cellO.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellO.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellO
+                            
+                        ElseIf elemento(1) = "torta de galleta (tradicional)" Then
+                          '  Dim cellP As Range
+                            For Each cellP In Workbooks("pide tu postre costos").Sheets("P12").Range("B3:B17")
+                                If cellP.Value = cellA.Value Then
+                                    cellA.Offset(0, 12) = CInt(cellA.Offset(0, 12) + cellP.Offset(0, 5) * elemento(2))
+                                End If
+                        
+                
+                            Next cellP
+                        
+                        'ElseIf elemento(1) = "torta chocolate (tradicional)" Then
+                           ' Dim cellP As Range
+                           ' For Each cellP In Workbooks("pide tu postre costos").Sheets("P5").Range("B3:B21")
+                               ' If cellP.Value = cellA.Value Then
+                                  '  cellA.Offset(0, 12) = cellA.Offset(0, 12) + cellP.Offset(0, 5) * elemento(2)
+                               ' End If
+                        
+                
+                           ' Next cellP
+                        
+                        
+                        End If
+            
+                    Next cellA
+    
+    
+              End If
+            
+         End If
+            
+      Next elemento
+        
+    
+    ultimaFila = ThisWorkbook.Sheets("Ventas"). _
+        Range("B" & Cells.Rows.Count).End(xlUp).Row
+        
+    'Debug.Print ultimaFila & " last"
+    
+    If ultimaFila = 2 And ThisWorkbook.Sheets("Ventas").Range("A" & ultimaFila).Value = "" Then
+    
+        ThisWorkbook.Sheets("Ventas").Range("A" & ultimaFila).Value = _
+            WorksheetFunction.Max(ThisWorkbook.Sheets("Ventas").Range("A:A")) + 1
+            
+        ThisWorkbook.Sheets("Ventas").Range("B" & ultimaFila).Value = _
+            CInt(Me.numPedido)
+            
+        ThisWorkbook.Sheets("Ventas").Range("C" & ultimaFila).Value = _
+            Me.fechaPedido
+            
+        ThisWorkbook.Sheets("Ventas").Range("D" & ultimaFila).Value = _
+            Me.ComboBox1.Value
+            
+        Dim l As Long
+        l = ThisWorkbook.Sheets("Pedidos"). _
+        Range("A" & Cells.Rows.Count).End(xlUp).Row
+        Dim i As Range
+        For Each i In ThisWorkbook.Sheets("Pedidos").Range("A1:A" & l)
+            If i.Value = CInt(Me.numPedido) Then
+        
+                ThisWorkbook.Sheets("Ventas").Range("E" & ultimaFila).Value = _
+                    ThisWorkbook.Sheets("Ventas").Range("E" & ultimaFila).Value + _
+                        i.Offset(0, 6)
+                
+                  ThisWorkbook.Sheets("Ventas").Range("F" & ultimaFila).Value = _
+                    ThisWorkbook.Sheets("Ventas").Range("F" & ultimaFila).Value + _
+                        i.Offset(0, 8)
+        
+            
+            End If
+        Next i
+            
+        
+      
+        ThisWorkbook.Sheets("Ventas").Range("G" & ultimaFila).Value = _
+            CDbl(Me.Label16)
+        
+        ThisWorkbook.Sheets("Ventas").Range("H" & ultimaFila).Value = _
+            "Por pagar"
+            
+            
+    Else
+        ThisWorkbook.Sheets("Ventas").Range("A" & ultimaFila + 1).Value = _
+            WorksheetFunction.Max(ThisWorkbook.Sheets("Ventas").Range("A:A")) + 1
+        
+        ThisWorkbook.Sheets("Ventas").Range("B" & ultimaFila + 1).Value = _
+            CInt(Me.numPedido)
+            
+        ThisWorkbook.Sheets("Ventas").Range("C" & ultimaFila + 1).Value = _
+            Me.fechaPedido
+        
+        ThisWorkbook.Sheets("Ventas").Range("D" & ultimaFila + 1).Value = _
+            Me.ComboBox1.Value
+            
+        'Dim l As Long
+        l = ThisWorkbook.Sheets("Pedidos"). _
+        Range("A" & Cells.Rows.Count).End(xlUp).Row
+        'Dim i As Range
+        For Each i In ThisWorkbook.Sheets("Pedidos").Range("A1:A" & l)
+            If i.Value = CInt(Me.numPedido) Then
+        
+                ThisWorkbook.Sheets("Ventas").Range("E" & ultimaFila + 1).Value = _
+                    ThisWorkbook.Sheets("Ventas").Range("E" & ultimaFila + 1).Value + _
+                        i.Offset(0, 6)
+                
+                  ThisWorkbook.Sheets("Ventas").Range("F" & ultimaFila + 1).Value = _
+                    ThisWorkbook.Sheets("Ventas").Range("F" & ultimaFila + 1).Value + _
+                        i.Offset(0, 8)
+        
+            
+            End If
+        Next i
+        
+        ThisWorkbook.Sheets("Ventas").Range("G" & ultimaFila + 1).Value = _
+            CDbl(Me.Label16)
+            
+        ThisWorkbook.Sheets("Ventas").Range("H" & ultimaFila + 1).Value = _
+            "Por pagar"
+            
+        
+    End If
+    
+    
+    
+    ' abajo se actualizara el inventario al generar un pedido
+   
+   
+    
+    
+    Unload Me
+    
+    
+End Sub
+
+Private Sub CommandButton3_Click()
+
+    'limpiar todo
+    With Me
+        .ComboBox1.Value = ""
+        .ComboBox2.Value = ""
+        .item1 = ""
+        .item2 = ""
+        .item3 = ""
+        .item4 = ""
+        .item5 = ""
+        .producto1 = ""
+        .producto2 = ""
+        .producto3 = ""
+        .producto4 = ""
+        .producto5 = ""
+        .precio1 = ""
+        .precio2 = ""
+        .precio3 = ""
+        .precio4 = ""
+        .precio5 = ""
+        .cantidad1 = ""
+        .cantidad2 = ""
+        .cantidad3 = ""
+        .cantidad4 = ""
+        .cantidad5 = ""
+        .subtotal1 = ""
+        .subtotal2 = ""
+        .subtotal3 = ""
+        .subtotal4 = ""
+        .subtotal5 = ""
+        .Label16 = ""
+        .TextBox1.Value = ""
+        .idCliente = ""
+        
+        
+    End With
+    
+    
+    
+End Sub
+
+Private Sub CommandButton4_Click()
+    Unload Me
+End Sub
+
+Private Sub fechaPedido_Click()
+
+End Sub
+
+Private Sub Frame1_Click()
+
+End Sub
+
+Private Sub idCliente_Click()
+
+End Sub
+
+Private Sub Label18_Click()
+
+End Sub
+
+Private Sub item1_Click()
+
+End Sub
+
+Private Sub Label21_Click()
+
+End Sub
+
+Private Sub Label3_Click()
+
+End Sub
+
+
+
+Private Sub numPedido_Click()
+
+End Sub
+
+Private Sub precio1_Click()
+
+End Sub
+
+Private Sub producto1_Click()
+
+End Sub
+
+Private Sub producto2_Click()
+
+End Sub
+
+Private Sub TextBox1_Change()
+
+End Sub
+
+Private Sub UserForm_Initialize()
+
+
+With Me
+    .numPedido = WorksheetFunction.Max(ThisWorkbook.Sheets("Pedidos").Range("A:A")) + 1
+    
+End With
+
+With Me
+    .fechaPedido = Date
+End With
+
+lastRow = ThisWorkbook.Sheets("Clientes"). _
+        Range("B" & Cells.Rows.Count).End(xlUp).Row
+        
+'Debug.Print lastRow
+
+
+        
+With Me.ComboBox1
+    .Clear
+    
+    .List = ThisWorkbook.Sheets("Clientes").Range("B2:B" & lastRow).Value
+    .AddItem ""
+   
+End With
+
+With Me.ComboBox2
+    .Clear
+    '.List = Workbooks("pide_tu_postre_costos.xlsx").Sheets("Productos") _
+        .Range("B3:B28").Value
+    .AddItem ""
+   
+End With
+
+Dim celda As Range
+
+For Each celda In Workbooks("pide tu postre costos.xlsx").Sheets("Productos").Range("B4:B34")
+    If celda.Offset(0, 4) <> "" And celda.Offset(0, 4) <> 0 Then
+        Me.ComboBox2.AddItem celda.Value & " (tradicional)"
+        'Debug.Print celda.Value & " (tradicional)"
+    End If
+    
+    If celda.Offset(0, 5) <> "" And celda.Offset(0, 5) <> 0 Then
+        Me.ComboBox2.AddItem celda.Value & " (saludable)"
+       ' Debug.Print celda.Value & " (saludable)"
+    End If
+    
+
+Next celda
+
+With Me
+   'Debug.Print lastRow
+   
+   For k = 2 To lastRow
+   
+         If ThisWorkbook.Sheets("Clientes").Cells(k, 2).Value = _
+            Me.ComboBox1.Value Then _
+                Me.idCliente = ThisWorkbook.Sheets("Clientes").Cells(k, 1).Value
+    
+           
+
+
+
+    Next k
+   
+End With
+
+
+End Sub
+
+
+Function findValue(valorBuscado)
+    Dim i As Integer
+    For i = 4 To 34
+        If Workbooks("pide tu postre costos").Sheets("Productos").Cells(i, 2).Value & " (tradicional)" = valorBuscado Then
+            findValue = Workbooks("pide tu postre costos").Sheets("Productos").Cells(i, 6).Value
+           Exit For
+               
+               
+        ElseIf Workbooks("pide tu postre costos").Sheets("Productos").Cells(i, 2).Value & " (saludable)" = valorBuscado Then
+            findValue = Workbooks("pide tu postre costos").Sheets("Productos").Cells(i, 7).Value
+           Exit For
+               
+        End If
+        
+    Next i
+End Function
+
+
+Function calculateSubtotal(cantidad, precio)
+    If cantidad <> "" And precio <> "" Then
+        calculateSubtotal = cantidad * precio
+    Else
+        calculateSubtotal = ""
+    End If
+        
+    
+End Function
+
+
+Function findCost(nombreProducto)
+    Dim c As Range
+    For Each c In Workbooks("pide tu postre costos").Sheets("Productos").Range("B4:B34")
+       ' Debug.Print c.Value & " (tradicional)"
+        If c.Value & " (tradicional)" = nombreProducto Then
+           ' Debug.Print c.Offset(0, 2)
+            findCost = c.Offset(0, 2)
+            Exit For
+        ElseIf c.Value & " (saludable)" = nombreProducto Then
+            findCost = c.Offset(0, 3)
+            Exit For
+        Else
+            findCost = ""
+        End If
+        
+    Next c
+    
+        
+    
+End Function
+
+Function findPrice(nombreProducto)
+    Dim c As Range
+    For Each c In Workbooks("pide tu postre costos").Sheets("Productos").Range("B4:B34")
+       ' Debug.Print c.Value & " (tradicional)"
+        If c.Value & " (tradicional)" = nombreProducto Then
+           ' Debug.Print c.Offset(0, 4)
+            findPrice = c.Offset(0, 4)
+            Exit For
+        ElseIf c.Value & " (saludable)" = nombreProducto Then
+            findPrice = c.Offset(0, 5)
+            Exit For
+        Else
+            findPrice = ""
+        End If
+        
+    Next c
+    
+        
+    
+End Function
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+////** aqui va el code de agregar compra form
+
+
+Private Sub ComboBox1_Change()
+    If Me.ComboBox1.Value = "Ingredientes" Then
+    
+       Dim c As Range
+       Me.ComboBox3.Clear
+       For Each c In Workbooks("pide tu postre costos").Sheets("Insumos").Range("B3:B100")
+        If c.Value = "Insumos" Then
+            Me.ComboBox3.AddItem c.Offset(0, 1)
+        End If
+        
+       Next c
+       
+    
+        With Me.ComboBox2
+        .Clear
+        .AddItem ""
+        .AddItem "Bells"
+        .AddItem "Field"
+        .AddItem "Gloria"
+        .AddItem "ninguna"
+        .AddItem "Royal"
+        .AddItem "Universal"
+        .AddItem "Laive"
+        .AddItem "Erza"
+        .AddItem "Nabisco"
+        .AddItem "Dureya"
+        .AddItem "Nestle"
+        .AddItem "Blanca Flor"
+        .AddItem "Ambrosoli"
+        .AddItem "Winters"
+        .AddItem "2 cerritos"
+        .AddItem "Chin Chin"
+        .AddItem "Sibarita"
+        .AddItem "Maxima"
+        .AddItem "Sao"
+        
+        
+        End With
+    
+    ElseIf Me.ComboBox1.Value = "Empaquetado" Then
+        Me.ComboBox3.Clear
+        For Each c In Workbooks("pide tu postre costos").Sheets("Insumos").Range("B3:B100")
+        If c.Value = "Empaquetado" Then
+            Me.ComboBox3.AddItem c.Offset(0, 1)
+        End If
+        
+       Next c
+      
+    Else
+        With Me.ComboBox2
+        .Clear
+        .AddItem ""
+        End With
+        
+        With Me.ComboBox3
+        .Clear
+        .AddItem ""
+        End With
+        
+    End If
+       
+    
+    
+End Sub
+
+Private Sub ComboBox3_Change()
+
+End Sub
+
+Private Sub CommandButton2_Click()
+
+
+If Me.Label13 <> "" Then
+    lastRow = ThisWorkbook.Sheets("Compras"). _
+        Range("A" & Cells.Rows.Count).End(xlUp).Row
+        
+        
+    If lastRow = 2 And ThisWorkbook.Sheets("Compras").Range("A" & lastRow).Value = "" Then
+        
+    ThisWorkbook.Sheets("Compras").Range("A" & lastRow).Value = CInt(Me.numCompra)
+    ThisWorkbook.Sheets("Compras").Range("B" & lastRow).Value = fechaCompra
+    
+    ThisWorkbook.Sheets("Compras").Range("C" & lastRow).Value = Me.ComboBox5.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("D" & lastRow).Value = Me.ComboBox1.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("E" & lastRow).Value = Me.ComboBox3.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("F" & lastRow).Value = Me.ComboBox2.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("G" & lastRow).Value = CDbl(txtCantidadCompra)
+    
+    ThisWorkbook.Sheets("Compras").Range("H" & lastRow).Value = Me.ComboBox4.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("I" & lastRow).Value = CDbl(txtPrecioUnit)
+    
+    If Me.TextBox1 <> "" Then
+    
+        ThisWorkbook.Sheets("Compras").Range("J" & lastRow).Value = CDbl(Me.TextBox1)
+    
+    End If
+    
+    ThisWorkbook.Sheets("Compras").Range("K" & lastRow).Value = Me.ComboBox6.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("L" & lastRow).Value = CDbl(Me.Label13)
+    
+    Else
+    
+    If Me.numCompra <> "" Then ThisWorkbook.Sheets("Compras").Range("A" & lastRow + 1).Value = CInt(Me.numCompra)
+    
+    
+    ThisWorkbook.Sheets("Compras").Range("B" & lastRow + 1).Value = fechaCompra
+    
+    ThisWorkbook.Sheets("Compras").Range("C" & lastRow + 1).Value = Me.ComboBox5.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("D" & lastRow + 1).Value = Me.ComboBox1.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("E" & lastRow + 1).Value = Me.ComboBox3.Value
+    
+    ThisWorkbook.Sheets("Compras").Range("F" & lastRow + 1).Value = Me.ComboBox2.Value
+    
+   If Me.txtCantidadCompra <> "" Then ThisWorkbook.Sheets("Compras").Range("G" & lastRow + 1).Value = CDbl(txtCantidadCompra)
+    
+    ThisWorkbook.Sheets("Compras").Range("H" & lastRow + 1).Value = Me.ComboBox4.Value
+    
+    If Me.txtPrecioUnit <> "" Then ThisWorkbook.Sheets("Compras").Range("I" & lastRow + 1).Value = Format(CDbl(txtPrecioUnit), "0.00")
+    
+    
+    If Me.TextBox1 <> "" Then
+    
+        ThisWorkbook.Sheets("Compras").Range("J" & lastRow + 1).Value = CDbl(Me.TextBox1)
+    
+    End If
+    
+    
+    ThisWorkbook.Sheets("Compras").Range("K" & lastRow + 1).Value = Me.ComboBox6.Value
+    
+    If Me.Label13 <> "" Then ThisWorkbook.Sheets("Compras").Range("L" & lastRow + 1).Value = Format(CDbl(Me.Label13), "0.00")
+    
+    End If
+    
+   ' Debug.Print Me.ComboBox3.Value
+    
+    Dim cell As Range
+    
+    For Each cell In Workbooks("pide tu postre costos").Sheets("Insumos").Range("C3:C100")
+        If cell.Value = Me.ComboBox3.Value Then
+            If cell.Value = "huevos" Then
+                If Me.ComboBox4.Value = "kilogramo" Then
+                    cell.Offset(0, 11) = cell.Offset(0, 11) + CInt(Me.txtCantidadCompra.Value * 15)
+                ElseIf Me.ComboBox4.Value = "unidad" Then
+                    cell.Offset(0, 11) = cell.Offset(0, 11) + Me.txtCantidadCompra.Value
+                Else
+                    If Me.ComboBox6.Value = "kilogramo" Then
+                        cell.Offset(0, 11) = CInt(cell.Offset(0, 11) + Me.TextBox1.Value * 15)
+                    ElseIf Me.ComboBox6.Value = "gramos" Then
+                        cell.Offset(0, 11) = CInt(cell.Offset(0, 11) + Me.TextBox1.Value * 15 / 1000) + 1
+                    ElseIf Me.ComboBox6.Value = "unidad" Then
+                        cell.Offset(0, 11) = cell.Offset(0, 11) + Me.TextBox1.Value
+                    End If
+                End If
+        
+            ElseIf cell.Value = "PLATANOS" Then
+                If Me.ComboBox4.Value = "kilogramo" Then
+                    cell.Offset(0, 11) = cell.Offset(0, 11) + CInt(Me.txtCantidadCompra.Value * 6)
+                ElseIf Me.ComboBox4.Value = "unidad" Then
+                    cell.Offset(0, 11) = cell.Offset(0, 11) + Me.txtCantidadCompra.Value
+                Else
+                    If Me.ComboBox6.Value = "kilogramo" Then
+                        cell.Offset(0, 11) = CInt(cell.Offset(0, 11) + Me.TextBox1.Value * 6)
+                    ElseIf Me.ComboBox6.Value = "gramos" Then
+                        cell.Offset(0, 11) = CInt(cell.Offset(0, 11) + Me.TextBox1.Value * 6 / 1000) + 1
+                    ElseIf Me.ComboBox6.Value = "unidad" Then
+                        cell.Offset(0, 11) = cell.Offset(0, 11) + Me.TextBox1.Value
+                    End If
+                End If
+        
+        
+            ElseIf Me.ComboBox4.Value = "kilogramo" Or Me.ComboBox4.Value = "litro" Then
+                cell.Offset(0, 11) = cell.Offset(0, 11) + Me.txtCantidadCompra.Value * 1000
+            ElseIf Me.ComboBox4.Value = "mililitros" Or Me.ComboBox4.Value = "gramos" Or Me.ComboBox4.Value = "unidad" Then
+                cell.Offset(0, 11) = cell.Offset(0, 11) + Me.txtCantidadCompra.Value * 1
+            Else
+               If Me.ComboBox6.Value = "kilogramo" Or Me.ComboBox6.Value = "litro" Then
+                    cell.Offset(0, 11) = cell.Offset(0, 11) + Me.txtCantidadCompra.Value * 1000 * Me.TextBox1.Value
+                ElseIf Me.ComboBox6.Value = "gramos" Or Me.ComboBox6.Value = "mililitros" Or Me.ComboBox6.Value = "unidad" Then
+                
+                    cell.Offset(0, 11) = cell.Offset(0, 11) + Me.txtCantidadCompra.Value * 1 * Me.TextBox1.Value
+                End If
+            End If
+        End If
+        
+    Next cell
+    
+   
+    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+    
+   
+    
+    
+    With Me
+        .ComboBox1.Value = ""
+        .ComboBox2.Value = ""
+        .ComboBox3.Value = ""
+        .ComboBox4.Value = ""
+        .ComboBox5.Value = ""
+        .numCompra = ""
+        .fechaCompra = ""
+        .Label13 = ""
+        .txtCantidadCompra = ""
+        .txtPrecioUnit = ""
+        .TextBox1 = ""
+        .ComboBox6 = ""
+    End With
+    
+End If
+    
+    
+End Sub
+
+Private Sub CommandButton3_Click()
+
+    With Me
+        .ComboBox1.Value = ""
+        .ComboBox2.Value = ""
+        .ComboBox3.Value = ""
+        .ComboBox4.Value = ""
+        .ComboBox5.Value = ""
+        .ComboBox6.Value = ""
+        .Label13 = ""
+        .txtCantidadCompra = ""
+        .txtPrecioUnit = ""
+        .TextBox1.Value = ""
+    End With
+    
+
+
+End Sub
+
+Private Sub CommandButton4_Click()
+'    Unload Me
+    With Me
+        .numCompra = WorksheetFunction.Max(ThisWorkbook.Sheets("Compras").Range("A:A")) + 1
+    
+    End With
+    
+    With Me
+        .fechaCompra = Date
+    End With
+    
+End Sub
+
+Private Sub Label13_Click()
+
+End Sub
+
+Private Sub labelTitulo_Click()
+
+End Sub
+
+Private Sub numCompra_Click()
+
+End Sub
+
+Private Sub txtCantidadCompra_Change()
+    With Me
+        .Label13 = Format(calculateSubtotal(txtCantidadCompra.Value, txtPrecioUnit.Value), "#,##0.00")
+    End With
+End Sub
+
+Private Sub txtPrecioUnit_Change()
+    With Me
+        .Label13 = Format(calculateSubtotal(txtCantidadCompra.Value, txtPrecioUnit.Value), "#,##0.00")
+    End With
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
+
+Private Sub UserForm_Initialize()
+    With Me
+        .numCompra = WorksheetFunction.Max(ThisWorkbook.Sheets("Compras").Range("A:A")) + 1
+    
+    End With
+    
+    With Me
+        .fechaCompra = Date
+    End With
+    
+    With Me.ComboBox5
+    .Clear
+    .AddItem ""
+    .AddItem "Metro"
+    .AddItem "Plaza Vea"
+    .AddItem "Callejon metro"
+    .AddItem "Mercado"
+    .AddItem "Bodega"
+    
+    
+    End With
+    
+    
+    With Me.ComboBox1
+    .Clear
+    .AddItem ""
+    .AddItem "Ingredientes"
+    .AddItem "Utensilios de cocina"
+    .AddItem "Empaquetado"
+    .AddItem "Otros"
+    
+    
+    End With
+    
+    With Me.ComboBox4
+    .Clear
+    .AddItem ""
+    .AddItem "kilogramo"
+    .AddItem "gramos"
+    .AddItem "litro"
+    .AddItem "mililitros"
+    .AddItem "unidad"
+    .AddItem "rollo"
+    .AddItem "paquete"
+    .AddItem "lata"
+    .AddItem "pote"
+    .AddItem "bolsa"
+    .AddItem "botella"
+    End With
+    
+    With Me.ComboBox6
+    .Clear
+    .AddItem ""
+    .AddItem "kilogramo"
+    .AddItem "gramos"
+    .AddItem "litro"
+    .AddItem "mililitros"
+    .AddItem "unidad"
+    
+    
+    
+    End With
+    
+    
+End Sub
+
+
+
+
+Function calculateSubtotal(cantidad, precio)
+    If cantidad <> "" And precio <> "" Then
+        calculateSubtotal = cantidad * precio
+    Else
+        calculateSubtotal = ""
+    End If
+        
+    
+End Function
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////*************
+
+
+Private Sub cbMedioPago_Change()
+
+End Sub
+
+Private Sub CommandButton1_Click()
+    
+    lastRow = ThisWorkbook.Sheets("Clientes"). _
+        Range("B" & Cells.Rows.Count).End(xlUp).Row
+        
+    'Debug.Print lastRow
+        
+    ThisWorkbook.Sheets("Clientes").Range("A" & lastRow + 1).Value = CInt(Me.numeroID)
+    ThisWorkbook.Sheets("Clientes").Range("B" & lastRow + 1).Value = Me.txtNombre.Value
+    ThisWorkbook.Sheets("Clientes").Range("C" & lastRow + 1).Value = Me.txtTelefono.Value
+    ThisWorkbook.Sheets("Clientes").Range("D" & lastRow + 1).Value = Me.txtEmail.Value
+    ThisWorkbook.Sheets("Clientes").Range("E" & lastRow + 1).Value = Me.cbMedioPago.Value
+    ThisWorkbook.Sheets("Clientes").Range("F" & lastRow + 1).Value = Me.cbCanal.Value
+    ThisWorkbook.Sheets("Clientes").Range("G" & lastRow + 1).Value = Me.txtDireccion.Value
+    ThisWorkbook.Sheets("Clientes").Range("H" & lastRow + 1).Value = Me.cbDistrito.Value
+    ThisWorkbook.Sheets("Clientes").Range("I" & lastRow + 1).Value = Me.txtNumCasa.Value
+    ThisWorkbook.Sheets("Clientes").Range("J" & lastRow + 1).Value = Me.txtMz.Value
+    ThisWorkbook.Sheets("Clientes").Range("K" & lastRow + 1).Value = Me.txtLt.Value
+    ThisWorkbook.Sheets("Clientes").Range("L" & lastRow + 1).Value = Me.txtInt.Value
+    ThisWorkbook.Sheets("Clientes").Range("M" & lastRow + 1).Value = Me.txtRef.Value
+    
+    formularioPedidos.Show
+    Unload Me
+   
+    
+End Sub
+
+Private Sub CommandButton2_Click()
+    With Me
+        .txtNombre.Value = ""
+        .txtTelefono.Value = ""
+        .txtEmail.Value = ""
+        .cbMedioPago.Value = ""
+        .cbCanal.Value = ""
+        .txtDireccion.Value = ""
+        .cbDistrito.Value = ""
+        .txtNumCasa.Value = ""
+        .txtMz.Value = ""
+        .txtLt.Value = ""
+        .txtInt.Value = ""
+        .txtRef.Value = ""
+    End With
+    
+End Sub
+
+Private Sub Label14_Click()
+
+End Sub
+
+Private Sub Label7_Click()
+
+End Sub
+
+Private Sub TextBox2_Change()
+
+End Sub
+
+Private Sub TextBox4_Change()
+
+End Sub
+
+Private Sub numeroID_Click()
+
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
+
+Private Sub UserForm_Initialize()
+    With Me
+    .numeroID = WorksheetFunction.Max(ThisWorkbook.Sheets("Clientes").Range("A:A")) + 1
+    
+    End With
+    
+    With Me.cbMedioPago
+        .AddItem "Yape"
+        .AddItem "Plin"
+        .AddItem "Transferencia BCP"
+    End With
+    
+    With Me.cbCanal
+        .AddItem "Facebook"
+        .AddItem "Instagram"
+    End With
+    
+    With Me.cbDistrito
+        .Clear
+        .AddItem ""
+        .AddItem "Callao"
+        .AddItem "Bellavista"
+        .AddItem "Carmen de La Legua"
+        .AddItem "La Perla"
+        .AddItem "La Punta"
+        .AddItem "Ventanilla"
+        .AddItem "Cercado de Lima"
+        .AddItem "Ancon"
+        .AddItem "Ate"
+        .AddItem "Barranco"
+        .AddItem "Breña"
+        .AddItem "Carabayllo"
+        .AddItem "Chaclacayo"
+        .AddItem "Chorrillos"
+        .AddItem "Cieneguilla"
+        .AddItem "Comas"
+        .AddItem "El Agustino"
+        .AddItem "Independencia"
+        .AddItem "Jesús María"
+        .AddItem "La Molina"
+        .AddItem "La Victoria"
+        .AddItem "Lince"
+        .AddItem "Los Olivos"
+        .AddItem "San Juan de Lurigancho"
+        .AddItem "Lurín"
+        .AddItem "Magdalena del Mar"
+        .AddItem "Miraflores"
+        .AddItem "Pachacámac"
+        .AddItem "Pucusana"
+        .AddItem "Pueblo Libre"
+        .AddItem "Puente Piedra"
+        .AddItem "Punta Hermosa"
+        .AddItem "Punta Negra"
+        .AddItem "Rímac"
+        .AddItem "San Bartolo"
+        .AddItem "San Borja"
+        .AddItem "San Isidro"
+        .AddItem "San Juan de Miraflores"
+        .AddItem "San Luis"
+        .AddItem "San Martín de Porres"
+        .AddItem "San Miguel"
+        .AddItem "Santa Anita"
+        .AddItem "Santiago de Surco"
+        .AddItem "Surquillo"
+        .AddItem "Villa El Salvador"
+        .AddItem "Villa María del Triunfo"
+        .AddItem "Asia"
+    End With
+    
+End Sub
+
+
+/////////////////// fin :)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
